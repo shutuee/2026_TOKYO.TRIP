@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOKYO_2026.06.02 — 06.07 雙姑東京遊</title>
+    <meta name="description" content="2026_六日自由行">
+    <meta property="og:title" content="雙姑東京遊">
+    <meta property="og:description" content="2026_六日自由行">
+    <meta property="og:type" content="website">
+    <meta property="og:image"
+          content="https://shutuee.github.io/2026_TOKYO.TRIP/IMG_2235.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style type="text/tailwindcss">
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f2f2f0; 
+            color: #5a5a57;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+        }
+
+        /* 深色調莫蘭迪高級配色系統 */
+        .card-itinerary { background: linear-gradient(135deg, #7d4d4d 0%, #9a6a6a 100%); } 
+        .card-dining { background: linear-gradient(135deg, #4a5a4a 0%, #6a7a6a 100%); }    
+        .card-transport { background: linear-gradient(135deg, #3d4d5a 0%, #5a6d7a 100%); } 
+        .card-disney { background: linear-gradient(135deg, #4d3d5a 0%, #6a5a7a 100%); }    
+        .card-coffee { background: linear-gradient(135deg, #b0985a 0%, #c9b08e 100%); }    
+        .card-budget-hotel { background: linear-gradient(135deg, #3d3d3d 0%, #5a5a5a 100%); }    
+
+        .icon-card {
+            aspect-ratio: 1 / 1;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .icon-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.2);
+        }
+
+        .icon-card i {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .page-content {
+            display: none;
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .active-page { display: block; }
+
+        .morandi-shadow {
+            box-shadow: 0 10px 40px -15px rgba(0,0,0,0.06);
+        }
+
+        .vegan-badge {
+            background: #e9ede9;
+            color: #4a5a4a;
+            font-size: 0.85rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-weight: 700;
+            border: 1px solid #d1d9d1;
+            white-space: nowrap;
+        }
+
+        .timeline-time {
+            @apply font-black text-slate-800 w-16 md:w-20 shrink-0 text-base md:text-lg;
+        }
+
+        .unified-border-l {
+            border-left: 4px solid #a0b0a0;
+        }
+
+        .date-pill {
+            background-color: #4a5a4a;
+            color: white;
+            padding: 10px 32px;
+            border-radius: 9999px;
+            display: inline-block;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 12px -2px rgba(74, 90, 74, 0.3);
+        }
+
+        .maps-link:hover {
+            color: #4a5a4a;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div class="max-w-4xl mx-auto px-6 py-12 md:py-16">
+        
+        <!-- 首頁 Dashboard -->
+        <div id="home-page" class="active-page">
+            <header class="mb-12 md:mb-16 text-center">
+                <h1 class="text-3xl md:text-4xl font-black tracking-[0.15em] mb-3 leading-tight uppercase">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-[#3d4d5a] to-[#7d4d4d]">TOKYO 2026</span><br>
+                    <span class="text-xl md:text-2xl font-bold tracking-[0.3em] text-[#b0985a]">06.02 — 06.07</span><br>
+                    <span class="mt-2 block text-[#5a5a57]">雙姑東京遊</span>
+                </h1>
+                <div class="h-1 w-16 bg-gradient-to-r from-[#3d4d5a] via-[#7d4d4d] to-[#b0985a] mx-auto mt-6 md:mt-8 rounded-full opacity-80"></div>
+            </header>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+                <div onclick="navigateTo('itinerary')" class="icon-card card-itinerary rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="calendar-days" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">行程安排</span>
+                </div>
+                <div onclick="navigateTo('dining')" class="icon-card card-dining rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="utensils" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">餐廳</span>
+                </div>
+                <div onclick="navigateTo('transport')" class="icon-card card-transport rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="train" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">市區交通</span>
+                </div>
+                <div onclick="navigateTo('disney')" class="icon-card card-disney rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="sparkles" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">迪士尼攻略</span>
+                </div>
+                <div onclick="navigateTo('coffee')" class="icon-card card-coffee rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="coffee" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">飲品與伴手禮</span>
+                </div>
+                <div onclick="navigateTo('budget-hotel')" class="icon-card card-budget-hotel rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <i data-lucide="wallet" class="w-12 h-12 md:w-14 md:h-14 text-white/90 mb-4 md:mb-5"></i>
+                    <span class="font-bold text-white tracking-[0.1em] text-base md:text-lg">住宿與費用</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 內容容器 -->
+        <div id="content-container">
+            <button id="back-btn" onclick="goHome()" class="hidden mb-10 flex items-center font-bold text-[#5a5a57] bg-white px-5 py-2.5 rounded-full shadow-sm border border-[#e2e2e0] hover:bg-[#f8f8f6] hover:shadow-md transition-all tracking-widest text-xs md:text-sm active:scale-95 w-fit">
+                <i data-lucide="arrow-left" class="w-4 h-4 md:w-5 md:h-5 mr-2 text-[#a5a5a2]"></i> BACK TO HOME
+            </button>
+
+            <!-- 1. 行程內容 -->
+            <div id="itinerary-page" class="page-content space-y-8">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-2xl md:text-3xl font-black tracking-[0.1em] text-[#5a5a57]">每日行程</h2>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- Day 1 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/2 (二) 第一天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time text-rose-500">08:15</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="text-rose-600 font-bold">高雄出發(虎航IT280)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Kaohsiung+International+Airport" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-rose-500">12:40</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="text-rose-600 font-bold">抵達東京成田機場</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Narita+International+Airport" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">14:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">搭乘SKYLINE TO 上野<br>(約40分鐘)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Ueno+Station" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">14:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-700">上野 - 午餐</p>
+                                        <p class="text-emerald-600 mt-1 italic font-medium">🌱 T's TanTan Ecute Ueno</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=T's+TanTan+Ecute+Ueno" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">16:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">MYSTAYS 清澄白河酒店<br>Check-in</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=HOTEL+MYSTAYS+Kiyosumi+Shirakawa" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">17:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">藍瓶：第一間日本首店<br>(清澄白河)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">18:00</span>
+                                <span class="text-emerald-700 font-bold">晚餐 (待定)</span>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">19:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">東京鐵塔(赤羽橋站 E21)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Tokyo+Tower" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 2 (Kamakura Updated) -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/3 (三) 第二天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time">08:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">出發</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(地鐵清澄白河)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Kiyosumi-shirakawa+Station" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">08:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">JR澀谷站</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(轉：JR 湘南新宿線往逗子）</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Shibuya+Station" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">09:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">明月院</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(JR北鎌倉站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Meigetsuin+Temple" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">11:00</span>
+                                <span class="font-medium text-slate-700">Coffee Time</span>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">11:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-600">午餐-御成橫丁</p>
+                                        <p class="text-emerald-500 mt-1 italic font-medium">(江之電-鎌倉站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Onari+Yokocho+Kamakura" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">13:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">小町通商店街</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(江之電-鎌倉站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Komachi-dori+Street" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">15:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">鎌倉大佛殿高德院</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(江之電-長谷站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Kotoku-in" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">16:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">拍照機位-DoubleDoors NAVY</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(江之電-七里濱)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=DoubleDoors+NAVY+Shichirigahama" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">16:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">拍照機位</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(江之電-鎌倉高校前站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Kamakura-kokomae+Station" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">17:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-slate-700">夕陽</p>
+                                        <p class="text-slate-500 mt-1 italic font-medium">(江之電-江之島站)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Enoshima+Island+Sunset" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 3 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/4 (四) 第三天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time">07:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">舞濱站：迪士尼樂園(陸地)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Maihama+Station" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">全天</span>
+                                <span class="font-medium text-slate-700 leading-relaxed">盡情享受無限制</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 4 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/5 (五) 第四天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time">09:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-bold text-slate-700">明治神宮(F15/C03)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Meiji+Jingu" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">11:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-700">明治神宮 - 午餐</p>
+                                        <p class="text-emerald-600 mt-1 italic font-medium">🌱 Vegan Bistro Jangara</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Vegan+Bistro+Jangara+Harajuku" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">13:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-slate-700">澀谷(Z01/G01/F16) 逛街</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5 font-medium">*任天堂旗艦店：澀谷PARCO 6F</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Shibuya+PARCO" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">16:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">SHIBUYA SKY 夜景(B6出口)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=SHIBUYA+SKY" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">18:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-700">澀谷 - 晚餐</p>
+                                        <p class="text-emerald-600 mt-1.5 italic font-medium leading-relaxed">🌱真さか MASAKA 居酒屋<br>🌱Shake Shack 澀谷</p>
+                                    </div>
+                                    <div class="flex flex-col gap-4 mt-2">
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Vegan+Izakaya+Masaka+Shibuya+PARCO" target="_blank" class="maps-link" title="真さか MASAKA">
+                                            <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                        </a>
+                                        <a href="https://www.google.com/maps/search/?api=1&query=Shake+Shack+Shibuya+Udagawacho" target="_blank" class="maps-link" title="Shake Shack">
+                                            <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 5 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/6 (六) 第五天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time">08:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-slate-700">淺草(A18/G19)</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1">建議 09:00 前抵達</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Senso-ji+Temple" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">11:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-700">淺草 - 午餐</p>
+                                        <p class="text-emerald-600 mt-1 italic font-medium">🌱 Injoy 悅納 <br>🌱VEGAN EAT TOKYO</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=VEGAN+EAT+TOKYO+Asakusa" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">13:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-bold text-slate-700">阿美橫町(G16/H18)</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Ameyoko+Shopping+District" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">16:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-bold text-slate-700">秋葉原(H18)逛街</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Akihabara+Electric+Town" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time text-emerald-600">18:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <div>
+                                        <p class="font-bold text-emerald-700">秋葉原 - 晚餐</p>
+                                        <p class="text-emerald-600 mt-1 italic font-medium">🌱 小牧食堂 (純素)</p>
+                                    </div>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Komaki+Shokudo+Akihabara" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 6 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow unified-border-l">
+                        <div class="mb-8">
+                            <span class="date-pill">6/7 (日) 第六天</span>
+                        </div>
+                        <div class="space-y-6 text-base md:text-lg">
+                            <div class="flex gap-4 md:gap-6">
+                                <span class="timeline-time">10:00</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">酒酒井<br>PREMIUM OUTLETS</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Shisui+Premium+Outlets" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6">
+                                <span class="timeline-time">14:30</span>
+                                <div class="flex-1 flex justify-between items-start">
+                                    <span class="font-medium text-slate-700">前往機場</span>
+                                    <a href="https://www.google.com/maps/search/?api=1&query=Narita+International+Airport" target="_blank" class="maps-link mt-0.5">
+                                        <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6 text-rose-600 font-bold">
+                                <span class="timeline-time">17:55</span>
+                                <span>搭乘班機返回<br>(聯合UA837)</span>
+                            </div>
+                            <div class="flex gap-4 md:gap-6 border-t border-[#f2f2f0] pt-6 text-rose-600 font-bold">
+                                <span class="timeline-time">21:00</span>
+                                <span>抵達高雄</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 餐廳頁面 -->
+            <div id="dining-page" class="page-content space-y-8">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-2xl md:text-3xl font-black tracking-widest text-[#5a5a57]">餐廳</h2>
+                </div>
+                <div class="grid gap-6">
+                    <!-- Ueno -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow flex flex-col border-l-4 border-emerald-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-sm rounded-md font-bold">上野</span>
+                                    <p class="font-bold text-emerald-800 text-xl md:text-2xl">T’s tantan</p>
+                                </div>
+                                <p class="text-sm md:text-base text-slate-500 font-medium">拉麵煎餃</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="vegan-badge">需去五辛</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=T's+tantan+ecute+Ueno" target="_blank" class="maps-link ml-3 shrink-0">
+                                    <i data-lucide="map-pin" class="w-7 h-7 text-emerald-600/70"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm md:text-base text-slate-400 mt-3 leading-relaxed font-medium">📍 JR 上野駅改札內ecute 上野 (3階) 內</p>
+                    </div>
+
+                    <!-- Shibuya 1 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow flex flex-col border-l-4 border-emerald-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-sm rounded-md font-bold">澀谷</span>
+                                    <p class="font-bold text-emerald-800 text-xl md:text-2xl">Shake Shack</p>
+                                </div>
+                                <p class="text-sm md:text-base text-slate-500 font-medium">漢堡</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="vegan-badge">需去五辛</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Shake+Shack+Shibuya+Udagawacho" target="_blank" class="maps-link ml-3 shrink-0">
+                                    <i data-lucide="map-pin" class="w-7 h-7 text-emerald-600/70"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm md:text-base text-slate-400 mt-3 leading-relaxed font-medium">📍 澀谷區宇田川町 12-9JouLe SHIBUYA 2階</p>
+                    </div>
+
+                    <!-- Shibuya 2 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow flex flex-col border-l-4 border-emerald-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-sm rounded-md font-bold">澀谷</span>
+                                    <p class="font-bold text-emerald-800 text-xl md:text-2xl">真さか<br>MASAKA</p>
+                                </div>
+                                <p class="text-sm md:text-base text-slate-500 font-medium">居酒屋</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="vegan-badge">需去五辛</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Vegan+Izakaya+Masaka+Shibuya+PARCO" target="_blank" class="maps-link ml-3 shrink-0">
+                                    <i data-lucide="map-pin" class="w-7 h-7 text-emerald-600/70"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm md:text-base text-slate-400 mt-3 leading-relaxed font-medium">📍 澀谷區宇田川町 15-1澀谷PARCO B1</p>
+                    </div>
+
+                    <!-- Asakusa 1 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow flex flex-col border-l-4 border-emerald-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-sm rounded-md font-bold">淺草</span>
+                                    <p class="font-bold text-emerald-800 text-xl md:text-2xl">VEGAN EAT TOKYO</p>
+                                </div>
+                                <p class="text-sm md:text-base text-slate-500 font-medium">義大利麵/咖哩</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="vegan-badge">純素</span>
+                                <a href="https://www.google.com/maps/search/?api=1&query=VEGAN+EAT+TOKYO+Asakusa" target="_blank" class="maps-link ml-3 shrink-0">
+                                    <i data-lucide="map-pin" class="w-7 h-7 text-emerald-600/70"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm md:text-base text-slate-400 mt-3 leading-relaxed font-medium">📍 1 Chome-22-5 Asakusa, Taito City</p>
+                    </div>
+
+                    <!-- Akihabara -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow flex flex-col border-l-4 border-emerald-300">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="px-2.5 py-1 bg-slate-100 text-slate-600 text-sm rounded-md font-bold">秋葉原</span>
+                                    <p class="font-bold text-emerald-800 text-xl md:text-2xl">小牧食堂<br>Komaki Shokudo</p>
+                                </div>
+                                <p class="text-sm md:text-base text-slate-500 font-medium">精進料理定食</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="vegan-badge">純素</span>
+                                <a href="https://www.google.com/maps/search/?api=10&query=Komaki+Shokudo+Akihabara" target="_blank" class="maps-link ml-3 shrink-0">
+                                    <i data-lucide="map-pin" class="w-7 h-7 text-emerald-600/70"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-sm md:text-base text-slate-400 mt-3 leading-relaxed font-medium">📍 CHABARA 內8-2 Kanda Neribeicho</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 市區交通頁面 -->
+            <div id="transport-page" class="page-content space-y-6">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-xl font-black tracking-widest text-[#5a5a57]">市區交通</h2>
+                </div>
+                <div class="grid gap-4">
+                    <a href="https://www.tokyometro.jp/tcn/subwaymap/index.html" target="_blank" class="bg-white p-6 rounded-[1.2rem] morandi-shadow flex justify-between items-center border-l-4 border-[#3d4d5a] hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center">
+                            <i data-lucide="map" class="w-6 h-6 mr-4 text-[#3d4d5a]"></i>
+                            <div>
+                                <p class="font-bold text-[#3d4d5a] text-base">東京地鐵路線圖</p>
+                                <p class="text-xs text-slate-400 mt-1 font-medium">Tokyo Metro Map<br>(Official Site)</p>
+                            </div>
+                        </div>
+                        <i data-lucide="external-link" class="w-5 h-5 text-slate-300"></i>
+                    </a>
+                    <a href="https://www.jreast.co.jp/tc/info/map_a4ol.pdf" target="_blank" class="bg-white p-6 rounded-[1.2rem] morandi-shadow flex justify-between items-center border-l-4 border-[#5a6d7a] hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center">
+                            <i data-lucide="file-text" class="w-6 h-6 mr-4 text-[#5a6d7a]"></i>
+                            <div>
+                                <p class="font-bold text-[#5a6d7a] text-base">東京 JR 路線圖(PDF)</p>
+                                <p class="text-xs text-slate-400 mt-1 font-medium">JR East Railway Map</p>
+                            </div>
+                        </div>
+                        <i data-lucide="external-link" class="w-5 h-5 text-slate-300"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4. 迪士尼攻略 -->
+            <div id="disney-page" class="page-content space-y-6">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-xl font-black tracking-widest text-[#5a5a57]">DISNEY 攻略</h2>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- 攻略懶人包圖片 -->
+                    <div class="rounded-[1.5rem] overflow-hidden morandi-shadow bg-white">
+                        <img src="https://raw.githubusercontent.com/shutuee/202606_TOKYO/refs/heads/main/PIC1.png" alt="東京迪士尼樂園攻略懶人包" class="w-full h-auto">
+                    </div>
+
+                    <!-- 綜合攻略 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow border-l-4 border-[#4d3d5a]">
+                        <h3 class="font-bold text-[#4d3d5a] text-lg mb-5 flex items-center">
+                            <i data-lucide="sparkles" class="w-5 h-5 mr-2"></i> 綜合攻略
+                        </h3>
+                        <ul class="space-y-4 text-sm text-slate-600 font-medium">
+                            <li>
+                                <a href="https://bobbytravel.tw/tokyo-disneyland/" target="_blank" class="flex items-start group">
+                                    <span class="mr-3 text-[#4d3d5a] text-lg leading-none">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-base group-hover:text-[#4d3d5a] transition-colors flex items-center">波比看世界：<br>東京迪士尼樂園全攻略 <i data-lucide="external-link" class="w-4 h-4 ml-2 text-slate-400"></i></p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://mimigo.tw/tokyo-disneyland/" target="_blank" class="flex items-start group">
+                                    <span class="mr-3 text-[#4d3d5a] text-lg leading-none">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-base group-hover:text-[#4d3d5a] transition-colors flex items-center">咪咪旅行：<br>東京迪士尼樂園指南 <i data-lucide="external-link" class="w-4 h-4 ml-2 text-slate-400"></i></p>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- VEGAN 素食指南 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow border-l-4 border-[#6a5a7a]">
+                        <h3 class="font-bold text-[#6a5a7a] text-lg mb-5 flex items-center">
+                            <i data-lucide="leaf" class="w-5 h-5 mr-2"></i> VEGAN 素食指南
+                        </h3>
+                        <ul class="space-y-4 text-sm text-slate-600 font-medium">
+                            <li>
+                                <a href="https://www.tokyodisneyresort.jp/en/tds/food/plantbase.html?_gl=1%2Ayzdala%2A_gcl_au%2ANzA1MDQxNDMzLjE3Nzc1MjA3MzY.%2A_ga%2AOTM5NTg2NDI3LjE3Nzc1MjA3Mzc.%2A_ga_ZHF5KDB93X%2AczE3Nzc1MjA4MDckbzEkZzEkdDE3Nzc1MjA4MTckajUwJGwwJGgw&fbclid=IwY2xjawRiJ4lleHRuA2FlbQIxMABicmlkETFNaVhmQ3Flb0FIVjBUVTJtc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHuGV-9wBs6BkBe64iav5h99g-vrtMb6Z0NW4A_Annbm2ElJATGaD2vadyIOw_aem_9ghipXbtfwxzRtrICr6A6g" target="_blank" class="flex items-start group">
+                                    <span class="mr-3 text-[#6a5a7a] text-lg leading-none">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-base group-hover:text-[#6a5a7a] transition-colors flex items-center break-all md:break-normal">東京迪士尼官方<br>Plant-based 飲食指南 <i data-lucide="external-link" class="w-4 h-4 ml-2 text-slate-400 shrink-0"></i></p>
+                                        <span class="vegan-badge mt-2 inline-block">純素推薦</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 咖啡與伴手禮專屬頁面 -->
+            <div id="coffee-page" class="page-content space-y-8">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-2xl md:text-3xl font-black tracking-widest text-[#5a5a57]">飲品與伴手禮</h2>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- 咖啡清單 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow border-l-4 border-[#b0985a]">
+                        <h3 class="font-bold text-[#b0985a] text-xl md:text-2xl mb-6 flex items-center">
+                            <i data-lucide="coffee" class="w-6 h-6 mr-3"></i> 咖啡與茶飲清單
+                        </h3>
+                        <ul class="space-y-5 text-base md:text-lg text-slate-600 font-medium">
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">清澄白河<br>Blue Bottle首店</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Blue+Bottle+Coffee+Kiyosumi+Shirakawa" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">連鎖<br>Tully’s Coffee</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">推薦：鮮奶茶</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Tully's+Coffee+Tokyo" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">新宿<br>Cois Espresso Club</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">推薦：Seasonal coffee</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Cois+Espresso+Club+Shinjuku" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">澀谷 Kenyan Shibuya</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">推薦：經典鮮奶茶</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Kenyan+Shibuya" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">淺草 八十八良葉舍</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">※ 必喝極致抹茶</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=八十八良葉舍+淺草" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">淺草 雷一茶</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">※ 抹茶甘味專賣</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=雷一茶+淺草" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- 伴手禮清單 -->
+                    <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow border-l-4 border-[#b0985a]">
+                        <h3 class="font-bold text-[#b0985a] text-xl md:text-2xl mb-6 flex items-center">
+                            <i data-lucide="gift" class="w-6 h-6 mr-3"></i> 成田機場必買清單
+                        </h3>
+                        <ul class="space-y-5 text-base md:text-lg text-slate-600 font-medium">
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">東京牛奶起司工房</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">海鹽＆卡門貝爾起司夾心餅乾</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=東京牛奶起司工房+成田機場" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">SNOWS</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">冬季限定生巧克力夾心餅</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=SNOWS+成田機場" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">Tokyo Rich<br>Cheesecake</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">極致濃郁起司蛋糕條</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=Tokyo+Rich+Cheesecake+成田機場" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">LeTAO</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">小樽色內通起司夾心餅乾</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=LeTAO+成田機場" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                            <li class="flex justify-between items-start">
+                                <div class="flex items-start">
+                                    <span class="mr-3 text-[#b0985a] text-xl leading-none mt-1">●</span>
+                                    <div>
+                                        <p class="font-bold text-slate-700 text-lg md:text-xl">紅茶巧克力夾心餅</p>
+                                        <p class="text-sm md:text-base text-slate-500 mt-1.5">LeTAO 經典紅茶香氣</p>
+                                    </div>
+                                </div>
+                                <a href="https://www.google.com/maps/search/?api=1&query=LeTAO+紅茶巧克力夾心餅" target="_blank" class="maps-link ml-4 shrink-0 mt-0.5">
+                                    <i data-lucide="map-pin" class="w-6 h-6 text-slate-400"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 預算與住宿頁面 -->
+            <div id="budget-hotel-page" class="page-content space-y-8">
+                <div class="border-b border-[#e2e2e0] pb-4">
+                    <h2 class="text-2xl md:text-3xl font-black tracking-widest text-[#5a5a57]">住宿與費用</h2>
+                </div>
+                
+                <!-- 預算圖表區塊 -->
+                <div class="bg-white p-6 md:p-10 rounded-[2rem] morandi-shadow text-center">
+                    <div class="relative inline-block mb-10">
+                        <svg id="budget-chart" width="260" height="260"></svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-sm font-bold text-[#a5a5a2] tracking-widest uppercase">Total / 人</span>
+                            <span class="text-3xl font-black text-[#5a5a57] mt-1">$21,817</span>
+                        </div>
+                    </div>
+                    <div id="budget-legend" class="text-left space-y-6 max-w-sm mx-auto px-2"></div>
+                </div>
+
+                <!-- 住宿資訊區塊 -->
+                <div class="bg-white p-6 md:p-8 rounded-[1.5rem] morandi-shadow border-l-4 border-[#3d3d3d]">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-black text-[#5a5a57] text-xl md:text-2xl tracking-wide">MYSTAYS<br>清澄白河酒店</h4>
+                        <a href="https://www.google.com/maps/search/?api=1&query=HOTEL+MYSTAYS+Kiyosumi+Shirakawa" target="_blank" class="maps-link ml-4 shrink-0">
+                            <i data-lucide="map-pin" class="w-8 h-8 text-[#5a6d7a]"></i>
+                        </a>
+                    </div>
+                    <p class="text-base md:text-lg text-slate-500 leading-loose font-medium">📍 1 Chome-12-16 Tokiwa, Koto City<br>🚇 清澄白河站<br>(E14 / Z11) 步行約 5-8 分鐘。</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // 初始化 Lucide 圖標
+        lucide.createIcons();
+
+        // 導覽功能
+        function navigateTo(pageId) {
+            document.getElementById('home-page').classList.remove('active-page');
+            document.getElementById('home-page').classList.add('hidden');
+            document.getElementById('back-btn').classList.remove('hidden');
+            
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
+            
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) targetPage.classList.add('active-page');
+            
+            if (pageId === 'budget-hotel') {
+                setTimeout(renderBudgetChart, 50);
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 回到首頁
+        function goHome() {
+            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page'));
+            document.getElementById('back-btn').classList.add('hidden');
+            document.getElementById('home-page').classList.remove('hidden');
+            document.getElementById('home-page').classList.add('active-page');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 預算圖表渲染 (D3.js)
+        function renderBudgetChart() {
+            const data = [
+                { label: "機票｜虎航-聯合航空", value: 10500, displayValue: "10,500/人", color: "#FF6B6B" },
+                { label: "住宿｜清澄白河", value: 8500, displayValue: "17,000/2人", color: "#4ECDC4" },
+                { label: "Klook｜迪士尼樂園(陸地)", value: 1717, displayValue: "3,433/2人 (C付)", color: "#FFD166" },
+                { label: "Klook｜Skyliner來回+地鐵", value: 1100, displayValue: "1,100", color: "#118AB2" }
+            ];
+            
+            const size = 260, innerRadius = 105, radius = size / 2;
+            const svg = d3.select("#budget-chart");
+            svg.selectAll("*").remove();
+            
+            const g = svg.append("g").attr("transform", `translate(${size/2},${size/2})`);
+            const pie = d3.pie().sort(null).value(d => d.value);
+            const arc = d3.arc().innerRadius(innerRadius).outerRadius(radius).cornerRadius(12).padAngle(0.06);
+            
+            g.selectAll("path")
+                .data(pie(data))
+                .enter()
+                .append("path")
+                .attr("d", arc)
+                .attr("fill", d => d.data.color)
+                .style("opacity", 0)
+                .transition()
+                .duration(1000)
+                .style("opacity", 1);
+
+            const legend = d3.select("#budget-legend");
+            legend.selectAll("*").remove();
+            data.forEach(d => {
+                const row = legend.append("div").attr("class", "flex justify-between items-center pb-3 border-b border-[#f2f2f0]");
+                const left = row.append("div").attr("class", "flex items-center space-x-3");
+                left.append("div").attr("class", "w-4 h-4 rounded-full shrink-0").style("background-color", d.color);
+                left.append("span").attr("class", "text-sm md:text-base font-bold text-slate-600").text(d.label);
+                row.append("span").attr("class", "text-sm md:text-base font-black text-slate-800 shrink-0").text(d.displayValue);
+            });
+        }
+    </script>
+</body>
+</html>
